@@ -1,0 +1,13 @@
+{
+    "name": "@nahara/keyframe",
+    "description": "Keyframing engine",
+    "authors": "",
+    "version": "1.0.0",
+    "type": "module",
+    "main": "index.js",
+    "license": "MIT",
+    "scripts": {
+        "test": "node test.js"
+    },
+    "dependencies": {}
+}
