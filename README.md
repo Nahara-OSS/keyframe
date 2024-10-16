@@ -10,7 +10,7 @@ your code, either directly or indirectly from `Timeline`.
 
 ## Example usage
 ```typescript
-import * as keyframe from "@nahara/keyframe"
+import * as keyframe from "@nahara-oss/keyframe"
 
 // Use our custom value type
 type Vec2 = [number, number]
