@@ -13,8 +13,5 @@
     "scripts": {
         "test": "node test.js"
     },
-    "publishConfig": {
-        "@naharaoss:registry": "https://npm.pkg.github.com"
-    },
     "dependencies": {}
 }
