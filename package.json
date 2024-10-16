@@ -1,13 +1,20 @@
 {
-    "name": "@nahara/keyframe",
+    "name": "@naharaoss/keyframe",
     "description": "Keyframing engine",
     "authors": "",
     "version": "1.0.0",
     "type": "module",
     "main": "index.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Nahara-OSS/keyframe.git"
+    },
     "license": "MIT",
     "scripts": {
         "test": "node test.js"
+    },
+    "publishConfig": {
+        "@naharaoss:registry": "https://npm.pkg.github.com"
     },
     "dependencies": {}
 }
