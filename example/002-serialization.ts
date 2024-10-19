@@ -24,29 +24,24 @@
 */
 
 /**
- * This example show you how to use the timeline.
+ * This example show you how to save the timeline into serializable object.
  */
 
 import * as keyframe from "@nahara/keyframe";
 
-const timeline = new keyframe.BasicTimeline(0, keyframe.scalarInterpolator);
+type Vec2 = { x: number, y: number };
+const timeline = new keyframe.BasicTimeline<Vec2>({ x: 0, y: 0 }, keyframe.structInterpolatorOf());
+timeline.set(0, { x: 0, y: 0 });
+timeline.set(100, { x: 100, y: 50 });
+timeline.set(200, { x: 200, y: -80 });
+timeline.set(300, { x: 50, y: 100 });
 
-console.log("Setting keyframes...");
-timeline.set(0, 0);
-timeline.set(100, 1);
-const kf3 = timeline.set(200, 2);
-timeline.set(300, 3);
+const serializable = timeline.asSerializable;
+console.log(serializable);
 
-// Timeline: [0, 100, 200, 300]
-console.log("Timeline is now ", timeline.keyframes.map(k => k.time));
-console.log("timeline.get(50) == ", timeline.get(50));
-console.log("timeline.get(150) == ", timeline.get(150));
-console.log("timeline.get(250) == ", timeline.get(250));
-console.log("timeline.get(400) == ", timeline.get(400));
-
-console.log("Changing keyframe time...");
-kf3.time = 800;
-
-// Timeline: [0, 100, 300, 800]
-console.log("Timeline is now ", timeline.keyframes.map(k => k.time));
-console.log("timeline.get(400) == ", timeline.get(400));
+const newTimeline = new keyframe.BasicTimeline<Vec2>({ x: 0, y: 0 }, keyframe.structInterpolatorOf());
+newTimeline.loadFromSerializable(serializable);
+console.log("newTimeline.get(50) == ", newTimeline.get(50));
+console.log("newTimeline.get(150) == ", newTimeline.get(150));
+console.log("newTimeline.get(250) == ", newTimeline.get(250));
+console.log("newTimeline.get(350) == ", newTimeline.get(350));

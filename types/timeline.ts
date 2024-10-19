@@ -25,6 +25,9 @@
 
 import type { Easing } from "./easing.ts";
 
+/**
+ * A timeline is a sequence of keyframes, where keyframes are ordered by its time.
+ */
 export interface ITimeline<T> extends Iterable<IKeyframe<T>> {
     /**
      * The initial value of this keyframe timeline. The timeline value getter will return this value until it went past

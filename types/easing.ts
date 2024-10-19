@@ -23,10 +23,23 @@
  * THE SOFTWARE.
 */
 
+/**
+ * A custom easing function. Custom easing functions are not serializable and may not work with some modules that need
+ * to save the timeline into serializable format, like JSON for example. Consider using other easings, unless you don't
+ * need ability to serialize.
+ */
 export type CustomEasing = (x: number) => number;
+
+/**
+ * Predefined easing functions. These functions are predefined in `interpolator.impl.ts`.
+ */
 export type PredefinedEasing = "linear" | "hold"
     | "ease-in-sine" | "ease-out-sine" | "ease-in-out-sine"
     | "ease-in-circ" | "ease-out-circ" | "ease-in-out-circ";
+
+/**
+ * A base type for complex easing functions.
+ */
 export interface IEasing<T extends string> { type: T; }
 
 /**

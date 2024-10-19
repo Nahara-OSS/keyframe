@@ -36,6 +36,32 @@ export class BasicTimeline<T> implements ITimeline<T> {
         public interpolator: Interpolator<T>
     ) {}
 
+    /**
+     * Get the timeline as serializable object. Serializable object can be serialized into different formats, like JSON
+     * or binary for example.
+     */
+    get asSerializable(): SerializableTimeline<T> {
+        return {
+            initialValue: structuredClone(this.initialValue),
+            keyframes: this.keyframes.map(k => k.asSerializable)
+        };
+    }
+
+    /**
+     * Load this timeline from a serializable object.
+     * @param serializable The serializable object decoded from deserializer.
+     */
+    loadFromSerializable(serializable: SerializableTimeline<T>) {
+        this.initialValue = serializable.initialValue;
+        this.keyframes = serializable.keyframes.map(s => new BasicKeyframe(
+            this,
+            s.time,
+            structuredClone(s.value),
+            structuredClone(s.easing),
+            s.flags
+        )).sort((a, b) => a.time - b.time);
+    }
+
     get(time: number): T {
         const idx = this.searchKeyframeIndex(time);
         if (idx >= 0) return this.keyframes[idx].value;
@@ -68,8 +94,7 @@ export class BasicTimeline<T> implements ITimeline<T> {
         const search = this.searchKeyframeIndex(time);
         const insertAt = search >= 0 ? search : -search - 1;
         const lastKf = this.keyframes[insertAt - 1];
-        const kf = new BasicKeyframe(this, time, value, easing ?? lastKf?.easing ?? "linear"); // TODO derive easing
-        if (flags) kf.addFlag(...flags);
+        const kf = new BasicKeyframe(this, time, value, easing ?? lastKf?.easing ?? "linear", flags);
         this.keyframes.splice(insertAt, 0, kf);
         return kf;
     }
@@ -107,6 +132,12 @@ export class BasicTimeline<T> implements ITimeline<T> {
         return this.keyframes[Symbol.iterator]();
     }
 
+    /**
+     * Search the keyframe index from this timeline, using binary search algorithm.
+     * @param time The keyframe time.
+     * @returns A non-negative value if there is a keyframe with given time, or `-1 - search` where `search` is the
+     * insert position.
+     */
     searchKeyframeIndex(time: number): number {
         if (this.keyframes.length == 0) return -1;
 
@@ -126,6 +157,11 @@ export class BasicTimeline<T> implements ITimeline<T> {
     }
 }
 
+interface SerializableTimeline<T> {
+    initialValue: T;
+    keyframes: SerializableKeyframe<T>[];
+}
+
 class BasicKeyframe<T> implements IKeyframe<T> {
     #time: number;
     #flags: KeyframeFlag[] = [];
@@ -134,9 +170,11 @@ class BasicKeyframe<T> implements IKeyframe<T> {
         public readonly timeline: BasicTimeline<T>,
         time: number,
         public value: T,
-        public easing: Easing
+        public easing: Easing,
+        flags?: KeyframeFlag[]
     ) {
         this.#time = time;
+        if (flags) this.#flags.push(...flags);
     }
 
     get flags(): KeyframeFlag[] { return [...this.#flags]; }
@@ -158,6 +196,19 @@ class BasicKeyframe<T> implements IKeyframe<T> {
         this.timeline.keyframes.splice(nextIdx < lastIdx ? lastIdx + 1 : lastIdx, 1);
     }
 
+    /**
+     * Get the keyframe as serializable object. Serializable object can be serialized into different formats, like JSON
+     * or binary for example.
+     */
+    get asSerializable(): SerializableKeyframe<T> {
+        return {
+            time: this.time,
+            easing: structuredClone(this.easing),
+            value: structuredClone(this.value),
+            flags: this.flags
+        };
+    }
+
     addFlag(...flags: KeyframeFlag[]): void {
         for (const flag of flags) {
             if (!this.#flags.includes(flag)) this.#flags.push(flag);
@@ -170,4 +221,11 @@ class BasicKeyframe<T> implements IKeyframe<T> {
             if (idx != -1) this.#flags.splice(idx, 1);
         }
     }
+}
+
+interface SerializableKeyframe<T> {
+    time: number;
+    easing: Easing;
+    value: T;
+    flags: KeyframeFlag[];
 }
