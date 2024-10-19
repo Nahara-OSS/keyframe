@@ -25,6 +25,11 @@
 
 import type { Easing, CustomEasing, PredefinedEasing } from "../types/easing.ts";
 
+/**
+ * A map of predefined easing functions. Each function name is corresponding to a function `f(t) = p`, where `t` is the
+ * time scaled down to `[0.0, 1.0]` range, and `p` is the display progress, which can overshoots outside the
+ * `[0.0, 1.0]` range.
+ */
 export const predefinedEasings: Record<PredefinedEasing, CustomEasing> = {
     "hold": () => 0,
     "linear": x => Math.max(Math.min(x, 1), 0),
@@ -38,6 +43,12 @@ export const predefinedEasings: Record<PredefinedEasing, CustomEasing> = {
         : (Math.sqrt(1 - Math.pow(-2 * x + 2, 2)) + 1) / 2
 };
 
+/**
+ * Apply easing function from time to progress.
+ * @param easing The easing function.
+ * @param time The time value in `[0.0, 1.0]` range.
+ * @returns The progress value.
+ */
 export function easingTimeToProgress(easing: Easing, time: number): number {
     if (typeof easing == "string") {
         const predefined = predefinedEasings[easing];
@@ -53,6 +64,14 @@ export function easingTimeToProgress(easing: Easing, time: number): number {
     throw new Error(`Unknown easing: ${easing}`);
 }
 
+/**
+ * Apply step easing function from time to progress. Step easing function may be used to achieve the "low framerate"
+ * feel.
+ * @param time The time value in `[0.0, 1.0]` range.
+ * @param steps The number of steps.
+ * @param forEachStep The optional easing function to use on each step. Leave it undefined to use `hold`.
+ * @returns The progress value.
+ */
 export function stepEasingTimeToProgress(time: number, steps: number, forEachStep?: Easing): number {
     const currentStep = Math.floor(time * steps);
     const currentStepValue = currentStep / steps;
@@ -65,6 +84,15 @@ export function stepEasingTimeToProgress(time: number, steps: number, forEachSte
     return currentStepValue + progressInStep * (nextStepValue - currentStepValue);
 }
 
+/**
+ * Apply cubic bezier easing function from time to progress. The X components of control points will always be clamped
+ * to `[0.0, 1.0]` range, while the Y components aren't so that the value can overshoot, creating some kind of elastic
+ * animation. Cubic bezier allows animators to have more controls on the easing function, at a cost of computation time.
+ * @param time The time value in `[0.0, 1.0]` range.
+ * @param param1 The first control point.
+ * @param param2 The second control point.
+ * @returns The progress value.
+ */
 export function cubicBezierEasingTimeToProgress(
     time: number,
     [cp1x, cp1y]: [number, number],

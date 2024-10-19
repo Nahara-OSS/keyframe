@@ -23,6 +23,11 @@
  * THE SOFTWARE.
 */
 
+/**
+ * This module contains the default implementations. This is what you probably want. 
+ * @module
+ */
+
 export * from "./easing.impl.ts";
 export * from "./interpolator.impl.ts";
 export * from "./timeline.impl.ts";

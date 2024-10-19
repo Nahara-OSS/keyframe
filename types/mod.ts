@@ -23,6 +23,12 @@
  * THE SOFTWARE.
 */
 
+/**
+ * This module only contains the TypeScript types. You may use this module if you want to write keyframe editor, but
+ * you don't want to rely on default implementations.
+ * @module
+ */
+
 export * from "./easing.ts";
 export * from "./interpolate.ts";
 export * from "./timeline.ts";

@@ -124,6 +124,9 @@ export interface IKeyframe<T> {
     removeFlag(...flags: KeyframeFlag[]): void;
 }
 
+/**
+ * Keyframe flags are mainly used in keyframe editors.
+ */
 export enum KeyframeFlag {
     /**
      * Locked flag - if the keyframe is locked, it can't be modified in keyframe editor.

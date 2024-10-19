@@ -28,6 +28,9 @@ import type { Interpolator } from "../types/interpolate.ts";
 import type { ITimeline, IKeyframe, KeyframeFlag } from "../types/timeline.ts";
 import { easingTimeToProgress } from "./easing.impl.ts";
 
+/**
+ * The default implementation of `ITimeline<T>`.
+ */
 export class BasicTimeline<T> implements ITimeline<T> {
     keyframes: BasicKeyframe<T>[] = [];
 

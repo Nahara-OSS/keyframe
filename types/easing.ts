@@ -60,4 +60,9 @@ export interface CubicBezierEasing extends IEasing<"cubic-bezier"> {
     cp2: [number, number];
 }
 
+/**
+ * Easing functions are used to transition between 2 states of the object without a sluggish "linear" feel. In real
+ * world, natural objects are not always moving at constant speed, which is why linear interpolation make your animation
+ * feels robotic.
+ */
 export type Easing = PredefinedEasing | StepEasing | CubicBezierEasing | CustomEasing;

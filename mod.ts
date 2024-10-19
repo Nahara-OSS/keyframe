@@ -23,5 +23,10 @@
  * THE SOFTWARE.
 */
 
+/**
+ * Nahara's Keyframe is a module for playing around with keyframe-based animations.
+ * @module
+ */
+
 export * from "./types/mod.ts";
 export * from "./impl/mod.ts";
